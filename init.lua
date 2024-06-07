@@ -153,12 +153,12 @@ later(function()
             { mode = 'n', keys = '<Leader>s', desc = '󰆓 Session' },
             { mode = 'n', keys = '<Leader>u', desc = '󰔃 UI' },
             { mode = 'n', keys = '<Leader>w', desc = ' Window' },
-            function() MiniClue.gen_clues.g() end,
-            function() MiniClue.gen_clues.builtin_completion() end,
-            function() MiniClue.gen_clues.marks() end,
-            function() MiniClue.gen_clues.registers() end,
-            function() MiniClue.gen_clues.windows() end,
-            function() MiniClue.gen_clues.z() end,
+            require('mini.clue').gen_clues.g(),
+            require('mini.clue').gen_clues.builtin_completion(),
+            require('mini.clue').gen_clues.marks(),
+            require('mini.clue').gen_clues.registers(),
+            require('mini.clue').gen_clues.windows(),
+            require('mini.clue').gen_clues.z(),
         },
         window = {
             delay = 300
