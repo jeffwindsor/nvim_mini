@@ -4,6 +4,6 @@ vim.filetype.add({
         ['inventory'] = 'dosini',
     },
     pattern = {
-        ['.*.yml'] = 'yaml.ansible',
+        ['.*.yml'] = 'yaml',
     }
 })

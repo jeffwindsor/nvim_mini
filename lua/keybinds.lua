@@ -41,6 +41,8 @@ end
 -- ╚═══════════════════════╝
 keymap("n", "<leader>wq", "<cmd>wqa<cr>", { noremap = true, silent = true, desc = 'Quit' })
 keymap("", "ö", ":")
+keymap("i", "<C-S-v>", "<C-r><C-o>*", { desc = 'Paste from System in Insertmode' })
+keymap("n", "<leader>uu", function() require('mini.deps').update() end, { desc = 'Update Plugins' })
 
 -- ╔════════════════════╗
 -- ║    Find Keymaps    ║
@@ -62,8 +64,6 @@ keymap("n", "<leader><space>", function() require('mini.pick').builtin.buffers()
     { noremap = true, silent = true, desc = 'Find Buffer' })
 keymap("n", "<leader>fg", function() require('mini.pick').builtin.grep_live() end,
     { noremap = true, silent = true, desc = 'Find String' })
-keymap("n", "<leader>fg", function() require('fzf-lua').live_grep() end,
-    { noremap = true, silent = true, desc = 'Find String' })
 keymap("n", "<leader>fwg", function()
         local wrd = vim.fn.expand("<cWORD>")
         require('mini.pick').builtin.grep_live({ pattern = wrd })
@@ -74,7 +74,8 @@ keymap("n", "<leader>fh", function() require('mini.pick').builtin.help() end,
 keymap("n", "<leader>fl", function() require('mini.extra').pickers.hl_groups() end,
     { noremap = true, silent = true, desc = 'Find HL Groups' })
 keymap("n", "<leader>fc", pick_colorscheme, { noremap = true, silent = true, desc = 'Change Colorscheme' })
-keymap('n', ',', function() require('mini.extra').pickers.buf_lines({ scope = 'current' }) end, { nowait = true })
+keymap('n', ',', function() require('mini.extra').pickers.buf_lines({ scope = 'current' }) end,
+    { nowait = true, desc = 'Search Lines' })
 
 -- ╔═══════════════════════╗
 -- ║    Session Keymaps    ║
@@ -89,7 +90,10 @@ keymap("n", "<leader>sw", function()
     local last_folder = cwd:match("([^/]+)$")
     require('mini.sessions').write(last_folder)
 end, { noremap = true, silent = true, desc = 'Save Session' })
-keymap("n", "<leader>sf", function() require('mini.sessions').select() end,
+keymap("n", "<leader>sf", function()
+        vim.cmd('wa')
+        require('mini.sessions').select()
+    end,
     { noremap = true, silent = true, desc = 'Load Session' })
 
 -- ╔═══════════════════════╗
