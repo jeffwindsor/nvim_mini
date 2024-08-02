@@ -1,7 +1,7 @@
 -- Clone 'mini.nvim manually in a way that it gets managed by 'mini.deps'
 local path_package = vim.fn.stdpath("data") .. "/site/"
 local mini_path = path_package .. "pack/deps/start/mini.nvim"
-if not vim.loop.fs_stat(mini_path) then
+if not vim.uv.fs_stat(mini_path) then
     vim.cmd('echo "Installing `mini.nvim`" | redraw')
     local clone_cmd = {
         "git",
@@ -414,7 +414,7 @@ now(function()
     Mvim_starter_custom = function()
         return {
             { name = "Recent Files", action = function() require("mini.extra").pickers.oldfiles() end, section = "Search" },
-            { name = "Session", action = function() require("mini.sessions").select() end, section = "Search" },
+            { name = "Session",      action = function() require("mini.sessions").select() end,        section = "Search" },
         }
     end
     require("mini.starter").setup({
@@ -468,5 +468,10 @@ require("autocmds")
 require("filetypes")
 require("highlights")
 require("keybinds")
-require("work")
 
+-- This is for work related, non mini Plugins.
+-- Ignore
+local path_modules = vim.fn.stdpath("config") .. "/lua/"
+if vim.uv.fs_stat(path_modules .. "work.lua") then
+    require("work")
+end
