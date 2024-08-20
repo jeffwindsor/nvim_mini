@@ -109,6 +109,8 @@ keymap("n", "<leader>ip",
     end,
     { noremap = true, silent = true, desc = 'Insert Password' })
 
+keymap("n", "YY", "<cmd>%y<cr>", { noremap = true, silent = true, desc = 'Yank Buffer' })
+
 -- ╔══════════════════════╗
 -- ║    Buffer Keymaps    ║
 -- ╚══════════════════════╝
@@ -155,6 +157,14 @@ keymap("n", "<leader>ls", "<cmd>Pick lsp scope='document_symbol'<cr>",
 keymap("n", "<leader>lr", function() vim.lsp.buf.rename() end, { noremap = true, silent = true, desc = 'Rename This' })
 keymap("n", "<leader>la", function() vim.lsp.buf.code_action() end,
     { noremap = true, silent = true, desc = 'Code Actions' })
+keymap("n", "<leader>le", function() require('mini.extra').pickers.diagnostic({ scope = "current" }) end,
+    { noremap = true, silent = true, desc = "LSP Errors in Buffer" })
+keymap("n", "<leader>lf", function()
+    vim.lsp.buf.code_action({
+        filter = function(a) return a.isPreferred end,
+        apply = true
+    })
+end, { noremap = true, silent = true, desc = "LSP Quickfix" })
 
 -- ╔══════════════════╗
 -- ║    UI Keymaps    ║
@@ -164,11 +174,8 @@ keymap("n", "<leader>wl", "<cmd>wincmd l<cr>", { noremap = true, silent = true, 
 keymap("n", "<leader>wk", "<cmd>wincmd k<cr>", { noremap = true, silent = true, desc = 'Focus Up' })
 keymap("n", "<leader>wj", "<cmd>wincmd j<cr>", { noremap = true, silent = true, desc = 'Focus Down' })
 keymap("n", "<leader>wh", "<cmd>wincmd h<cr>", { noremap = true, silent = true, desc = 'Focus Right' })
--- Alternate Window Navigation
--- keymap('n', '<S-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
--- keymap('n', '<S-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
--- keymap('n', '<S-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
--- keymap('n', '<S-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+keymap("n", "<leader>ur", "<cmd>colorscheme randomhue<cr>", { desc = 'Random Colorscheme' })
 
 keymap("n", "<leader>wq", "<cmd>wincmd q<cr>", { noremap = true, silent = true, desc = 'Close Window' })
 keymap("n", "<leader>n", "<cmd>noh<cr>", { noremap = true, silent = true, desc = 'Clear Search Highlight' })
@@ -181,3 +188,14 @@ keymap("n", "<leader>bs", split_sensibly, { noremap = true, silent = true, desc 
 keymap("n", "<leader>ud", "<cmd>set background=dark<cr>", { noremap = true, silent = true, desc = 'Dark Background' })
 keymap("n", "<leader>ub", "<cmd>set background=light<cr>", { noremap = true, silent = true, desc = 'Light Background' })
 keymap("n", "<leader>um", "<cmd>lua MiniMap.open()<cr>", { noremap = true, silent = true, desc = 'Mini Map' })
+
+-- Trying a "Center Code" Keymap
+keymap("n", "<leader>uc", function()
+    local margin = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_open_win(margin, false, {
+        split = 'left',
+        win = 0,
+        style = 'minimal',
+        width = 40
+    })
+end, { desc = 'Center Buffer' })

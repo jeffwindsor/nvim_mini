@@ -57,9 +57,6 @@ now(function()
         vim.g.neovide_floating_blur_amount_x = 10.0
         vim.g.neovide_floating_blur_amount_y = 10.0
 
-        -- vim.g.neovide_transparency = 0.9
-        -- vim.g.neovide_window_blurred = true
-
         vim.o.guicursor =
         "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait100-blinkoff700-blinkon700-Cursor/lCursor,sm:block-blinkwait0-blinkoff300-blinkon300"
         vim.g.neovide_cursor_animation_length = 0.03
@@ -190,7 +187,7 @@ later(function()
         },
     })
 end)
--- later(function() require('mini.colors').setup() end)
+later(function() require('mini.colors').setup() end)
 later(function()
     require("mini.comment").setup()
 end)
@@ -321,7 +318,7 @@ end)
 --     require('mini.hues').setup({
 --         background = '#fbf7f0',
 --         foreground = '#000000',
---         n_hues     = 8,
+--         n_hues     = 4,
 --         accent     = 'bg',
 --         saturation = 'high'
 --     })
@@ -438,9 +435,7 @@ now(function()
     })
 end)
 later(function()
-    require("mini.statusline").setup({
-        use_icons = true,
-    })
+    require("mini.statusline").setup()
 end)
 later(function()
     require("mini.surround").setup()
