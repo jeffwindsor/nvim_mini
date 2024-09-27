@@ -1,4 +1,13 @@
--- Clone 'mini.nvim manually in a way that it gets managed by 'mini.deps'
+--          ╔═════════════════════════════════════════════════════════╗
+--          ║                          MVIM                           ║
+--          ╚═════════════════════════════════════════════════════════╝
+
+--  ─( mini.nvim )──────────────────────────────────────────────────────
+--          ┌─────────────────────────────────────────────────────────┐
+--                Clone 'mini.nvim manually in a way that it gets
+--                            managed by 'mini.deps'
+--          └─────────────────────────────────────────────────────────┘
+
 local path_package = vim.fn.stdpath("data") .. "/site/"
 local mini_path = path_package .. "pack/deps/start/mini.nvim"
 if not vim.uv.fs_stat(mini_path) then
@@ -15,16 +24,18 @@ if not vim.uv.fs_stat(mini_path) then
     vim.cmd('echo "Installed `mini.nvim`" | redraw')
 end
 
--- Set up 'mini.deps' (customize to your liking)
+--  ─( Set up 'mini.deps' )─────────────────────────────────────────────
 require("mini.deps").setup({ path = { package = path_package } })
 
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
+--          ╭─────────────────────────────────────────────────────────╮
+--          │                     Neovim Options                      │
+--          ╰─────────────────────────────────────────────────────────╯
 now(function()
     vim.g.mapleader = " "
-    vim.o.backup = false
     vim.o.number = true
-    vim.o.relativenumber = true
+    vim.o.relativenumber = false
     vim.o.laststatus = 2
     vim.o.list = true
     vim.o.listchars = table.concat({ "extends:…", "nbsp:␣", "precedes:…", "tab:> " }, ",")
@@ -34,15 +45,20 @@ now(function()
     vim.o.expandtab = true
     vim.o.scrolloff = 10
     vim.o.clipboard = "unnamed,unnamedplus"
+    vim.o.updatetime = 1000
     vim.opt.iskeyword:append("-")
     vim.o.spelllang = "de,en"
     vim.o.spelloptions = "camel"
     vim.opt.complete:append("kspell")
+    vim.o.path = vim.o.path .. ",**"
+    vim.o.tags = vim.o.tags .. ",/home/dosa/.config/nvim/tags"
 
-    vim.cmd("filetype plugin indent on")
     vim.cmd("colorscheme randomhue")
 end)
 
+--          ╭─────────────────────────────────────────────────────────╮
+--          │                         Neovide                         │
+--          ╰─────────────────────────────────────────────────────────╯
 now(function()
     if vim.g.neovide then
         vim.g.neovide_scroll_animation_length = 0.1
@@ -69,7 +85,6 @@ later(function()
     require("mini.align").setup()
 end)
 later(function()
-    -- This is needed for mini.animate to work with mouse scrolling
     local animate = require("mini.animate")
     animate.setup({
         scroll = {
@@ -81,9 +96,12 @@ later(function()
         },
     })
 end)
--- Disabled Here. This is called directly from our Colorscheme in the colors/ folder
--- You can enable this by uncommenting.
--- We provide a basic Catppuccin Colorscheme here
+--          ┌─────────────────────────────────────────────────────────┐
+--                Disabled Here. This is called directly from our
+--                       Colorscheme in the colors/ folder
+--                     You can enable this by uncommenting.
+--                We provide a basic Catppuccin Colorscheme here
+--          └─────────────────────────────────────────────────────────┘
 -- later(function()
 --     require('mini.base16').setup({
 --         palette = {
@@ -197,8 +215,8 @@ later(function()
             go_in = "<RET>",
         },
         window = {
-            info = { border = "rounded" },
-            signature = { border = "rounded" },
+            info = { border = "solid" },
+            signature = { border = "solid" },
         },
     })
 end)
@@ -221,8 +239,12 @@ later(function()
 end)
 later(function()
     require("mini.files").setup({
+        mappings = {
+            close = '<ESC>',
+        },
         windows = {
             preview = true,
+            border = "solid",
             width_preview = 80,
         },
     })
@@ -233,7 +255,7 @@ end)
 later(function()
     require("mini.git").setup()
 end)
-now(function()
+later(function()
     local hipatterns = require("mini.hipatterns")
 
     local censor_extmark_opts = function(_, match, _)
@@ -250,41 +272,16 @@ now(function()
         pattern = {
             "password: ()%S+()",
             "password_usr: ()%S+()",
-            ".*_pw: ()%S+()",
-            "password_.*: ()%S+()",
+            "_pw: ()%S+()",
+            "password_asgard_read: ()%S+()",
+            "password_elara_admin: ()%S+()",
             "gpg_pass: ()%S+()",
             "passwd: ()%S+()",
         },
         group = "",
         extmark_opts = censor_extmark_opts,
     }
-    -- TODO Make the "mask" Text a variale based on the match
-    local mattern_tbl = {
-        "'.*bakup_path:", "Rollout new Backup",
-        "'.*base_pw:", "base_pw is deprecated",
-    }
 
-    local mattern_extmark_opts = function(_, match, _)
-        local mask = mattern_tbl[match]
-        if mask == nil then
-            mask = "No Pattern"
-        end
-        return {
-            virt_text = { { mask, "FoldColumn" } },
-            virt_text_pos = "eol",
-            priority = 199,
-            right_gravity = true,
-        }
-    end
-
-    local mattern = {
-        pattern = {
-            ".*backup_path:",
-            ".*base_pw:",
-        },
-        group = "MiniHipatternsNote",
-        extmark_opts = mattern_extmark_opts,
-    }
     hipatterns.setup({
         highlighters = {
             -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
@@ -295,7 +292,6 @@ now(function()
 
             -- Cloaking Passwords
             pw = password_table,
-            -- mattern = mattern,
 
             -- Highlight hex color strings (`#rrggbb`) using that color
             hex_color = hipatterns.gen_highlighter.hex_color(),
@@ -311,18 +307,20 @@ now(function()
         vim.cmd("edit")
     end, { desc = "Toggle Password Cloaking" })
 end)
--- We disable this, as we use the randomhue Colorscheme
--- You can enable this by uncommenting
--- We Provide a Modus Operandi inspired setup here
--- later(function()
---     require('mini.hues').setup({
---         background = '#fbf7f0',
---         foreground = '#000000',
---         n_hues     = 4,
---         accent     = 'bg',
---         saturation = 'high'
---     })
--- end)
+--          ┌─────────────────────────────────────────────────────────┐
+--             We disable this, as we use the randomhue Colorscheme
+--                      You can enable this by uncommenting
+--                We Provide a Modus Operandi inspired setup here
+--          └─────────────────────────────────────────────────────────┘
+--later(function()
+--    require('mini.hues').setup({
+--        background = '#e1dbd1',
+--        foreground = '#000000',
+--        n_hues     = 2,
+--        accent     = 'red',
+--        saturation = 'high'
+--    })
+--end)
 later(function()
     require("mini.icons").setup()
 end)
@@ -349,11 +347,28 @@ later(function()
     require("mini.misc").setup()
 end)
 later(function()
-    require("mini.move").setup({})
+    require("mini.move").setup({
+        mappings = {
+            -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl.
+            left = '<M-S-h>',
+            right = '<M-S-l>',
+            down = '<M-S-j>',
+            up = '<M-S-k>',
+
+            -- Move current line in Normal mode
+            line_left = '<M-S-h>',
+            line_right = '<M-S-l>',
+            line_down = '<M-S-j>',
+            line_up = '<M-S-k>',
+        },
+    }
+    )
 end)
 later(function()
-    -- We took this from echasnovski's personal configuration
-    -- https://github.com/echasnovski/nvim/blob/master/init.lua
+--          ┌─────────────────────────────────────────────────────────┐
+--            We took this from echasnovski's personal configuration
+--           https://github.com/echasnovski/nvim/blob/master/init.lua
+--          └─────────────────────────────────────────────────────────┘
     local filterout_lua_diagnosing = function(notif_arr)
         local not_diagnosing = function(notif)
             return not vim.startswith(notif.msg, "lua_ls: Diagnosing")
@@ -363,9 +378,9 @@ later(function()
     end
     require("mini.notify").setup({
         content = { sort = filterout_lua_diagnosing },
-        window = { config = { border = "double" } },
+        window = { config = { border = "solid" } },
     })
-    -- vim.notify = MiniNotify.make_notify()
+    vim.notify = MiniNotify.make_notify()
 end)
 later(function()
     require("mini.operators").setup()
@@ -376,12 +391,12 @@ end)
 later(function()
     local win_config = function()
         local height = math.floor(0.618 * vim.o.lines)
-        local width = math.floor(0.618 * vim.o.columns)
+        local width = math.floor(0.4 * vim.o.columns)
         return {
             anchor = "NW",
             height = height,
             width = width,
-            border = "rounded",
+            border = "solid",
             row = math.floor(0.5 * (vim.o.lines - height)),
             col = math.floor(0.5 * (vim.o.columns - width)),
         }
@@ -454,9 +469,12 @@ require("autocmds")
 require("filetypes")
 require("highlights")
 require("keybinds")
+require("box")
 
--- This is for work related, non mini Plugins.
--- Ignore
+--          ┌─────────────────────────────────────────────────────────┐
+--                  This is for work related, non mini Plugins.
+--                                    Ignore
+--          └─────────────────────────────────────────────────────────┘
 local path_modules = vim.fn.stdpath("config") .. "/lua/"
 if vim.uv.fs_stat(path_modules .. "work.lua") then
     require("work")
