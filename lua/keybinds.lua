@@ -40,7 +40,7 @@ end
 -- ║    General Keymaps    ║
 -- ╚═══════════════════════╝
 keymap("n", "<leader>q", "<cmd>wqa<cr>", { desc = 'Quit' })
-keymap("n", "ö", "<leader>")
+keymap("n", "ö", ":")
 keymap("i", "<C-S-v>", "<C-r><C-o>*", { desc = 'Paste from System in Insertmode' })
 keymap("n", "<leader>mu", function() require('mini.deps').update() end, { desc = 'Update Plugins' })
 
