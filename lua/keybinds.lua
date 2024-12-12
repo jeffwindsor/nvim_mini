@@ -43,14 +43,22 @@ keymap("n", "<leader>q", "<cmd>wqa<cr>", { desc = 'Quit' })
 keymap("n", "ö", ":")
 keymap("i", "<C-S-v>", "<C-r><C-o>*", { desc = 'Paste from System in Insertmode' })
 keymap("n", "<leader>mu", function() require('mini.deps').update() end, { desc = 'Update Plugins' })
+keymap("n", "<S-Insert>", "p", { desc = 'Remap Paste for CopyQ' })
+keymap("i", "<S-Insert>", "<C-R>+", { desc = 'Remap Paste for CopyQ' })
 
 -- ╔════════════════════╗
 -- ║    Find Keymaps    ║
 -- ╚════════════════════╝
-keymap("n", "<leader>fs", function() require('mini.pick').builtin.files() end,
+keymap("n", "<leader>ff", function() require('mini.pick').builtin.files() end,
     { desc = 'Find File' })
-keymap("n", "<leader>fa", function() require('mini.pick').builtin.resume() end,
+keymap("n", "<leader>fr", function() require('mini.pick').builtin.resume() end,
     { desc = 'Find File' })
+keymap("n", "<leader>E",
+    function()
+        require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
+    end,
+    { desc = 'Neotree' }
+)
 keymap("n", "<leader>e", function()
         local buffer_name = vim.api.nvim_buf_get_name(0)
         if buffer_name == "" or string.match(buffer_name, "Starter") then
@@ -82,6 +90,7 @@ keymap('n', ',', function() require('mini.extra').pickers.buf_lines({ scope = 'c
 -- ╚═══════════════════════╝
 keymap("n", "<leader>ss", function()
     vim.cmd('wa')
+    require("neo-tree.command").execute({ action = "close" })
     require('mini.sessions').write()
     require('mini.sessions').select()
 end, { desc = 'Switch Session' })
@@ -170,10 +179,10 @@ keymap("n", "<leader>qk", "<cmd>cprev<CR>zz")
 -- ║    UI Keymaps    ║
 -- ╚══════════════════╝
 -- Window Navigation
-keymap("n", "<M-l>", "<cmd>wincmd l<cr>", { desc = 'Focus Left' })
-keymap("n", "<M-k>", "<cmd>wincmd k<cr>", { desc = 'Focus Up' })
-keymap("n", "<M-j>", "<cmd>wincmd j<cr>", { desc = 'Focus Down' })
-keymap("n", "<M-h>", "<cmd>wincmd h<cr>", { desc = 'Focus Right' })
+keymap("n", "<M-n>", "<cmd>wincmd l<cr>", { desc = 'Focus Left' })
+keymap("n", "<M-r>", "<cmd>wincmd k<cr>", { desc = 'Focus Up' })
+keymap("n", "<M-t>", "<cmd>wincmd j<cr>", { desc = 'Focus Down' })
+keymap("n", "<M-d>", "<cmd>wincmd h<cr>", { desc = 'Focus Right' })
 
 keymap("n", "<leader>ur", "<cmd>colorscheme randomhue<cr>", { desc = 'Random Colorscheme' })
 
@@ -190,7 +199,27 @@ keymap("n", "<leader>ub", "<cmd>set background=light<cr>", { desc = 'Light Backg
 keymap("n", "<leader>um", "<cmd>lua MiniMap.open()<cr>", { desc = 'Mini Map' })
 
 --  ─( Neotree )────────────────────────────────────────────────────────
-keymap("n", "<leader>tt", "<cmd>Neotree toggle<cr>", { desc = 'Neotree' })
+-- keymap("n", "<leader>tt", "<cmd>Neotree toggle<cr>", { desc = 'Neotree' })
+keymap("n", "<leader>tt", function()
+    local reveal_file = vim.fn.expand('%:p')
+    if (reveal_file == '') then
+        reveal_file = vim.fn.getcwd()
+    else
+        local f = io.open(reveal_file, "r")
+        if (f) then
+            f.close(f)
+        else
+            reveal_file = vim.fn.getcwd()
+        end
+    end
+    require("neo-tree.command").execute({
+        action = "focus",
+        source = "filesystel",
+        position = "left",
+        reveal_file = reveal_file,
+        reveal_force_cwd = true,
+    })
+end, { desc = 'Neotree' })
 
 --  ─( Trying a "Center Code" Keymap )──────────────────────────────────
 keymap("n", "<leader>uc", function()

@@ -63,7 +63,8 @@ now(function()
     if vim.g.neovide then
         vim.g.neovide_scroll_animation_length = 0.1
         vim.opt.mousescroll = "ver:10,hor:6"
-        vim.g.neovide_theme = "light"
+        vim.opt.linespace = -1
+        vim.g.neovide_theme = "dark"
 
         vim.g.neovide_floating_shadow = true
         vim.g.neovide_floating_z_height = 2
@@ -189,6 +190,7 @@ later(function()
             { mode = "n", keys = "<Leader>g", desc = "󰊢 Git" },
             { mode = "n", keys = "<Leader>i", desc = "󰏪 Insert" },
             { mode = "n", keys = "<Leader>l", desc = "󰘦 LSP" },
+            { mode = "n", keys = "<Leader>m", desc = " Mini" },
             { mode = "n", keys = "<Leader>q", desc = " NVim" },
             { mode = "n", keys = "<Leader>s", desc = "󰆓 Session" },
             { mode = "n", keys = "<Leader>u", desc = "󰔃 UI" },
@@ -277,6 +279,7 @@ later(function()
             "password_elara_admin: ()%S+()",
             "gpg_pass: ()%S+()",
             "passwd: ()%S+()",
+            "secret: ()%S+()",
         },
         group = "",
         extmark_opts = censor_extmark_opts,
