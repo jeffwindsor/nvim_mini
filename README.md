@@ -29,9 +29,7 @@ For my Setup, i include a "work.lua" File at the end of ini.lua. Feel free to al
 Mini.nvim provieds two different option to set up a colorscheme:
 - mini.hues
 - mini.base16
-Per default we use mini.base16 with our own colorscheme, inspired by the emacs modus themes by protesilaos.
-It should be noted though, that the dev of mini.base16 feels like it doesn't do highlighting as well as neovim could, as it closely follows the base16 specification. You can change the theme to randomhue
-or manually configure mini.hues for a more coherent look.
+We currently load the `randomhue` theme on startup, which is based on mini.hues. If you want a specific colorscheme, and not a random one at start, configure it in the init file by uncommenting the mini.hues Block.
 
 ### mini.hues
 This creates a colorscheme based on a background and foreground color. Alternatively it provides a "randomhues" colorscheme that randomizes the look with each call.
